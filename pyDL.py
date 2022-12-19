@@ -22,6 +22,19 @@ def on_progress(
     dwnd = round(dwnd, 1)
     print(f'\rDownload Progress: {percentage_of_completion}%, Total Size: {totalsz} MB, Remaining: {remain} MB')
 
+def confirmation_query(query_text):
+    print(query_text)
+    q = input("y / n: ")
+    
+    if not (
+        q.upper() == "Y" or 
+        q.upper() == "YES" or 
+        q.upper() == "YEAH" or 
+        q.upper() == "YE"
+    ):
+        print("Exiting")
+        return False
+    return True
 
 while True:
 
@@ -39,17 +52,7 @@ while True:
         print("Could not find the video. Exiting.")
         break
 
-
-    print(f"Do you wish to download \"{yt.title}\"?")
-    q = input("y / n: ")
-
-    if not (
-        q.upper() == "Y" or 
-        q.upper() == "YES" or 
-        q.upper() == "YEAH" or 
-        q.upper() == "YE"
-    ):
-        print("Exiting")
+    if not (confirmation_query(f"Do you wish to download \"{yt.title}\"?")):
         break
 
     yt.register_on_progress_callback(on_progress)
@@ -74,17 +77,10 @@ while True:
         except:
             print("Please enter a valid integer corresponding to the stream you wish to download.")
 
-    print(f"The file size for the selected stream is {round( query[i].filesize / 1.0e9, ndigits=3)} Gb. (plus audio?) Do you wish to proceed?")
-
-    q = input("y / n: ")
-
-    if not (
-        q.upper() == "Y" or 
-        q.upper() == "YES" or 
-        q.upper() == "YEAH" or 
-        q.upper() == "YE"
-    ):
-        print("Exiting")
+    if (not confirmation_query(
+        f'''The file size for the selected stream is 
+        \r{round( query[i].filesize / 1.0e9, ndigits=3)} Gb. (plus audio if res > 720p)
+        \rDo you wish to proceed?''')):
         break
 
     print("Choose save location from dialogue box.")
@@ -115,7 +111,7 @@ while True:
         print('\n\n Combining video and audio file using ffmpeg. \n\n')
         savepath_vid = savepath_vid.replace('/', '\\')
         savepath_audio = savepath_audio.replace('/', '\\')
-        os.system(f"ffmpeg -i {savepath_vid} -i {savepath_audio} -c copy {savepath_vid}_combined.{mime}")
+        os.system(f"ffmpeg -i \"{savepath_vid}\" -i \"{savepath_audio}\" -c copy \"{savepath_vid}_combined.{mime}\"")
 
     print("Done")
     break
