@@ -107,14 +107,17 @@ while True:
             audio = yt.streams.filter(mime_type=f"audio/{mime}").order_by('abr').last()
             savepath_audio = audio.download(output_path = path, filename=filename, filename_prefix = 'audio_')
 
-    if not progressive:
-        print('\n\n Combining video and audio file using ffmpeg. \n\n')
-        savepath_vid = savepath_vid.replace('/', '\\')
-        savepath_audio = savepath_audio.replace('/', '\\')
-        os.system(f"ffmpeg -i \"{savepath_vid}\" -i \"{savepath_audio}\" -c copy \"{savepath_vid}_combined.{mime}\"")
+        if not progressive:
+            print('\n\n Combining video and audio file using ffmpeg. \n\n')
+            savepath_vid = savepath_vid.replace('/', '\\')
+            savepath_audio = savepath_audio.replace('/', '\\')
+            os.system(f"ffmpeg -i \"{savepath_vid}\" -i \"{savepath_audio}\" -c copy \"{savepath_vid}_combined.{mime}\"")
 
-    print("Done")
-    break
+        print("Done")
+        break
+    else:
+        print("Exiting")
+        break
 
     # USEFUL FFMPEG CUT COMMAND
     # ffmpeg -i input.extension -ss 16:18:03 -to 39:88:74 -c copy output.extension
